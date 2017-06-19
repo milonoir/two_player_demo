@@ -1,20 +1,58 @@
-const R_WIDTH = 50;
-const R_HEIGHT = 50;
-const R_SPEED = 2;
+const GAME_FPS = 60;
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 
-// canvas
+// canvas globals
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var cvWidth = canvas.width;
 var cvHeight = canvas.height;
 
-// rectangle coords
-var r_x = 10, r_y = 10;
+var rect = {
+    width: 50,
+    height: 50,
+    x: 10,
+    y: 10,
+    speed: 2,
+
+    move() {
+        if (upKey) {
+            if (this.y <= 0) {
+                this.y = 0;
+            } else {
+                this.y -= this.speed;
+            }
+        } else if (downKey) {
+            if (this.y + this.height >= cvHeight) {
+                this.y = cvHeight - this.height;
+            } else {
+                this.y += this.speed;
+            }
+        }
+
+        if (leftKey) {
+            if (this.x <= 0) {
+                this.x = 0;
+            } else {
+                this.x -= this.speed;
+            }
+        } else if (rightKey) {
+            if (this.x + this.width >= cvWidth) {
+                this.x = cvWidth - this.width;
+            } else {
+                this.x += this.speed;
+            }
+        }
+    },
+
+    draw() {
+        ctx.fillStyle = "#FF0000";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
 
 // arrow key flags
 var upKey = downKey = leftKey = rightKey = false;
@@ -48,44 +86,17 @@ document.onkeyup = function (e) {
 }
 
 function animate() {
-    if (upKey) {
-        if (r_y <= 0) {
-            r_y = 0;
-        } else {
-            r_y -= R_SPEED;
-        }
-    } else if (downKey) {
-        if (r_y + R_HEIGHT >= cvHeight) {
-            r_y = cvHeight - R_HEIGHT;
-        } else {
-            r_y += R_SPEED;
-        }
-    }
-
-    if (leftKey) {
-        if (r_x <= 0) {
-            r_x = 0;
-        } else {
-            r_x -= R_SPEED;
-        }
-    } else if (rightKey) {
-        if (r_x + R_WIDTH >= cvWidth) {
-            r_x = cvWidth - R_WIDTH;
-        } else {
-            r_x += R_SPEED;
-        }
-    }
+    rect.move();
 }
 
 function draw() {
-    animate();
-
     ctx.clearRect(0, 0, cvWidth, cvHeight);
 
-    ctx.fillStyle = "#FF0000";
-    ctx.fillRect(r_x, r_y, R_WIDTH, R_HEIGHT);
+    rect.draw();
 
     requestAnimationFrame(draw);
 }
 
+
+var x = setInterval(animate, 1000 / GAME_FPS);
 draw();
