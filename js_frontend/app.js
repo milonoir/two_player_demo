@@ -97,6 +97,22 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
+var ws = new WebSocket("ws://localhost:8000/ws");
 
+function sync() {
+    var msg = {
+        id: 1,
+        px: rect.x,
+        py: rect.y
+    }
+
+    ws.send(JSON.stringify(msg));
+}
+
+// animate every frame
 var x = setInterval(animate, 1000 / GAME_FPS);
+
+// send data to server in every other frame
+var y = setInterval(sync, 1000 / (GAME_FPS / 2));
+
 draw();
