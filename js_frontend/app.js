@@ -14,43 +14,47 @@ var cvHeight = canvas.height;
 var rect = {
     width: 50,
     height: 50,
-    x: 10,
-    y: 10,
+    posX: 10,
+    posY: 10,
+    spdX: 0,
+    spdY: 0,
+    accX: 0,
+    accY: 0,
     speed: 2,
 
     move() {
         if (upKey) {
-            if (this.y <= 0) {
-                this.y = 0;
+            if (this.posY <= 0) {
+                this.posY = 0;
             } else {
-                this.y -= this.speed;
+                this.posY -= this.speed;
             }
         } else if (downKey) {
-            if (this.y + this.height >= cvHeight) {
-                this.y = cvHeight - this.height;
+            if (this.posY + this.height >= cvHeight) {
+                this.posY = cvHeight - this.height;
             } else {
-                this.y += this.speed;
+                this.posY += this.speed;
             }
         }
 
         if (leftKey) {
-            if (this.x <= 0) {
-                this.x = 0;
+            if (this.posX <= 0) {
+                this.posX = 0;
             } else {
-                this.x -= this.speed;
+                this.posX -= this.speed;
             }
         } else if (rightKey) {
-            if (this.x + this.width >= cvWidth) {
-                this.x = cvWidth - this.width;
+            if (this.posX + this.width >= cvWidth) {
+                this.posX = cvWidth - this.width;
             } else {
-                this.x += this.speed;
+                this.posX += this.speed;
             }
         }
     },
 
     draw() {
         ctx.fillStyle = "#FF0000";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.posX, this.posY, this.width, this.height);
     }
 }
 
@@ -102,8 +106,8 @@ var ws = new WebSocket("ws://localhost:8000/ws");
 function sync() {
     var msg = {
         id: 1,
-        px: rect.x,
-        py: rect.y
+        px: rect.posX,
+        py: rect.posY
     }
 
     ws.send(JSON.stringify(msg));
